@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AbstractContentViewer</title>
+    <script type="application/javascript">
+        /** 
+            dont delete! 
+        **/
+        function init() {
+            window.data = getData();
+            setXapiObjectGetter(getXapiObject);
+            registerOnSubmitListener(onSubmit);
+        }
+        /** 
+            dont delete! 
+        **/
+        function updateLayout() {
+            propagateLayoutChanges();
+        }
+        /** 
+            dont delete! 
+        **/
+        function sendStatement(stmt) {
+            sendXapiStatement(stmt);
+        }
+    </script>
+
+    <!-- EDIT css for custom styling 
+         
+        NOTE: you can use Material-css classes for styling 
+        Source: https://fezvrasta.github.io/bootstrap-material-design/docs/4.0/getting-started/introduction/
+    -->
+     <style type ="text/css">
+     </style>
+    <!-- EDIT css for custom styling -->
+
+</head>
+<body>    
+    <!-- EDIT html for card display 
+    
+    for example:
+    <div id="description"></div>
+    <div id="answers"></div>
+    <div id="contextContainer">
+        <button id="showContextHeader" class="btn btn-primary" onclick="showHideContext()"></button>
+        <p id="contextContentContainer"></p>
+    </div> 
+    -->
+    <h1 id="title"></h1>
+    <!-- EDIT html for card display  -->
+
+    <!-- EDIT card logic -->
+    <script type="application/javascript">
+        /** 
+            function setContent() -> display content (write data from dataobject to DOM Elements)
+
+            for example:
+            document.getElementById('title').innerHTML = data.title;
+        **/
+        function setContent(){}
+        
+        /** 
+            function getXapiObject() used to build XAPI-Object
+            for syntax: https://github.com/adlnet/xAPI-Spec/blob/master/xAPI-Data.md
+
+            for example:
+            return {
+                "definition": {
+                    "description": {
+                        "en-US": window.data.description
+                    },
+                    "type": "http://adlnet.gov/expapi/activities/cmi.interaction",
+                    "interactionType": "fill-in",
+                    "correctResponsesPattern": 
+                        getAllCombinations(window.data.answers).map(function(e){ return e.join("[,]") }) 
+                    
+                }
+            }
+        **/
+        function getXapiObject(){}
+
+        /** 
+            function onInteraction() -> should be called (event listener) everytime user klicks, writes, moves.. something 
+            must send statement on interaction! e.g.:
+            var stmt = {};
+                // actor is set by hosting application
+                stmt.actor = undefined;
+                stmt.verb = {
+                    "id": "http://adlnet.gov/expapi/verbs/interacted",
+                    "display": {
+                        "de-DE": "interagierte",
+                        "en-US": "interacted",
+                        "fr-FR": "a interagi",
+                        "es-ES": "interactuó"
+                    }
+                };
+                stmt.object = getXapiObject();
+                stmt.result = {
+                    response: getCurrentAnswers()
+                };
+                sendStatement(stmt);
+        **/
+        function onInteraction(){}
+
+        /** 
+            function onSubmit() -> is called when user klicks 'submit'-Button @card
+            has 2 states: display correct answer -> submit icon changes to "revert" -> revert to original state
+            
+            Must send Statement on submit! e.g.:
+            var stmt = {};
+                // actor is set by hosting application
+                stmt.actor = undefined;
+                stmt.verb = {
+                    "id": "http://adlnet.gov/expapi/verbs/answered",
+                    "display": {
+                        "de-DE": "beantwortete",
+                        "en-US": "answered",
+                        "fr-FR": "a répondu",
+                        "es-ES": "contestó"
+                    }
+                };
+                stmt.object = getXapiObject();
+                stmt.result = {
+                    response: getCurrentAnswers(),
+                    success: checkIfCurrentAnswersCorrect()
+                };
+                sendStatement(stmt);
+        **/
+        function onSubmit(){}
+        
+        /** 
+            function init() -> dont delete! used for initialization.
+        **/
+        init();
+
+        setContent();
+        updateLayout();
+    </script>
+    <!-- EDIT card logic -->
+
+</body>
+</html>
